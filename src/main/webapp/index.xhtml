@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:p="http://primefaces.org/ui" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core" xmlns:fn="http://java.sun.com/jsp/jstl/functions" xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
+<h:head>
+	<title>Hotels Service</title>
+	<link href="resources/images/logo.png" rel="icon" />
+	<link href="#{request.contextPath}/resources/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+	<link href="#{request.contextPath}/resources/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+	<link href="#{request.contextPath}/resources/css/styles.css" rel="stylesheet" type="text/css" />
+</h:head>
+<h:body>
+
+	<div class="container-fluid">
+
+		<div class="row">
+			<div class="col-xl-6 col-lg-8 col-md-9 col-sm-10 col-11 mx-auto">
+				<div class="card text-white search-card mt-3">
+					<div class="card-body pt-2">
+						<h4 class="card-title">Search Hotels</h4>
+						<h:form prependId="false">
+							<p:messages closable="true" showDetail="false" showSummary="true" />
+							<div class="form-row mt-4">
+								<div class="form-group col-11">
+									<p:outputLabel value="Going to" for="destination" />
+									<p:inputText id="destination" value="#{hotelSearchMB.searchCriteria.destination}" styleClass="form-control form-control-sm" pt:placeholder="Destination, hotel name, airport, train station, landmark, or address" onkeyup="clickButtonOnEnterClick(event,'searchButton')" />
+								</div>
+							</div>
+
+							<div class="form-row mt-3">
+								<div class="form-group col-md-3 col-sm-4">
+									<label>Length of Stay</label>
+									<br />
+									<p:spinner value="#{hotelSearchMB.searchCriteria.lengthOfStay}" size="5" stepFactor="1" min="1" suffix=" day(s)" onkeyup="clickButtonOnEnterClick(event,'searchButton')" />
+								</div>
+							</div>
+
+							<div class="form-row mt-4">
+								<div class="form-group col-sm-4">
+									<label>Min Trip Start Date</label>
+									<br />
+									<p:calendar mindate="today" size="12" pattern="yyyy-MM-dd" value="#{hotelSearchMB.searchCriteria.minTripStartDate}" pt:placeholder="yyyy-MM-dd" onkeyup="clickButtonOnEnterClick(event,'searchButton')" />
+								</div>
+								<div class="form-group col-sm-4 ml-sm-3">
+									<label>Max Trip Start Date</label>
+									<br />
+									<p:calendar mindate="today" size="12" pattern="yyyy-MM-dd" value="#{hotelSearchMB.searchCriteria.maxTripStartDate}" pt:placeholder="yyyy-MM-dd" onkeyup="clickButtonOnEnterClick(event,'searchButton')" />
+								</div>
+							</div>
+
+							<div class="form-row mt-3 align-items-center">
+								<div class="col-sm-3">Star Rating</div>
+								<div class="form-group col-sm-4 mx-sm-auto">
+									<small class="align-top">min</small>
+									<br />
+									<p:spinner value="#{hotelSearchMB.searchCriteria.minStarRating}" size="5" stepFactor="0.1" min="1" max="5" onkeyup="clickButtonOnEnterClick(event,'searchButton')" />
+								</div>
+								<div class="form-group col-sm-4 ml-sm-4">
+									<small class="align-top">max</small>
+									<br />
+									<p:spinner value="#{hotelSearchMB.searchCriteria.maxStarRating}" size="5" stepFactor="0.1" min="1" max="5" onkeyup="clickButtonOnEnterClick(event,'searchButton')" />
+								</div>
+							</div>
+
+							<div class="form-row mt-3 align-items-center">
+								<div class="col-sm-3">Guest Rating</div>
+								<div class="form-group col-sm-4 mx-sm-auto">
+									<small class="align-top">min</small>
+									<br />
+									<p:spinner value="#{hotelSearchMB.searchCriteria.minGuestRating}" size="5" stepFactor="0.1" min="1" max="5" onkeyup="clickButtonOnEnterClick(event,'searchButton')" />
+								</div>
+								<div class="form-group col-sm-4 ml-sm-4">
+									<small class="align-top">max</small>
+									<br />
+									<p:spinner value="#{hotelSearchMB.searchCriteria.maxGuestRating}" size="5" stepFactor="0.1" min="1" max="5" onkeyup="clickButtonOnEnterClick(event,'searchButton')" />
+								</div>
+							</div>
+
+							<div class="form-row mt-3 align-items-center">
+								<div class="col-sm-3">Total Rating</div>
+								<div class="form-group col-sm-4 mx-sm-auto">
+									<small class="align-top">min</small>
+									<br />
+									<p:spinner value="#{hotelSearchMB.searchCriteria.minTotalRating}" size="5" stepFactor="0.1" min="1" max="5" onkeyup="clickButtonOnEnterClick(event,'searchButton')" />
+								</div>
+								<div class="form-group col-sm-4 ml-sm-4">
+									<small class="align-top">max</small>
+									<br />
+									<p:spinner value="#{hotelSearchMB.searchCriteria.maxTotalRating}" size="5" stepFactor="0.1" min="1" max="5" onkeyup="clickButtonOnEnterClick(event,'searchButton')" />
+								</div>
+							</div>
+
+							<div class="mt-2">
+								<h:commandLink id="searchButton" actionListener="#{hotelSearchMB.search}" styleClass="btn btn-warning font-weight-bold">
+									<i class="fa fa-search" /> Search
+								</h:commandLink>
+							</div>
+						</h:form>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<h:panelGroup rendered="#{hotelSearchMB.searchResult ne null}" layout="block" styleClass="search-result-container container bg-light mt-4 p-4 rounded">
+			<h3 class="float-left">Search Result</h3>
+			<em class="text-muted float-right">#{fn:length(hotelSearchMB.searchResult.offers.Hotel)} offer(s) found</em>
+			<br clear="right" />
+			<hr />
+
+			<h:panelGroup rendered="#{empty hotelSearchMB.searchResult.offers.Hotel}" layout="block">
+				No results found ...
+			</h:panelGroup>
+			<h:panelGroup rendered="#{!empty hotelSearchMB.searchResult.offers.Hotel}" layout="block" styleClass="row">
+				<ui:repeat var="hotel" value="#{hotelSearchMB.searchResult.offers.Hotel}">
+					<div class="col-lg-4 col-md-6 col-sm-8 col-12 mx-md-0 mx-sm-auto mb-4 px-lg-1 px-2">
+						<div class="card hotel-result-card" onclick="window.open(decodeURIComponent('#{hotel.hotelUrls.hotelInfositeUrl}'));">
+							<div class="card-body p-2">
+								<div class="row pb-3">
+									<div class="col-3 text-left">
+										<img class="img-thumbnail" src="#{hotel.hotelInfo.hotelImageUrl}" alt="#{hotel.hotelInfo.hotelName}" />
+									</div>
+									<div class="col-9">
+										<div class="row">
+											<div class="col-6 pr-2">
+												<em>Star Rating</em>
+											</div>
+											<div class="col-6 p-0">
+												<img src="resources/images/stars-#{hotel.hotelInfo.hotelStarRating}.png" alt="#{hotel.hotelInfo.hotelStarRating}/5" />
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-6 pr-2">
+												<em>Guest Rating</em>
+											</div>
+											<div class="col-6 p-0">
+												#{hotel.hotelInfo.hotelGuestReviewRating}/5 <small class="text-muted">(#{hotel.hotelInfo.hotelReviewTotal} revs)</small>
+											</div>
+										</div>
+									</div>
+
+								</div>
+								<h6 class="card-title font-weight-bold text-primary">#{hotel.hotelInfo.localizedHotelName}</h6>
+								<p class="card-text">
+									#{hotel.hotelInfo.hotelLongDestination}
+									<br />
+									<em class="text-muted d-inline">#{hotel.hotelInfo.hotelStreetAddress}</em>
+								</p>
+								<h4 class="float-right text-warning">
+									#{hotel.hotelPricingInfo.originalPricePerNight} #{hotel.hotelPricingInfo.currency} <small class="small-font d-block text-right">per night</small>
+								</h4>
+								<p class="float-left">
+									length of stay
+									<br />
+									#{hotel.offerDateRange.lengthOfStay} day(s)
+								</p>
+							</div>
+						</div>
+					</div>
+				</ui:repeat>
+			</h:panelGroup>
+		</h:panelGroup>
+
+
+
+		<script type="text/javascript" src="#{request.contextPath}/resources/js/script.js" />
+		<h:outputScript library="primefaces" name="jquery/jquery.js" />
+
+	</div>
+
+</h:body>
+</html>
